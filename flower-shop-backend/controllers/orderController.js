@@ -13,7 +13,7 @@ const createOrder = async (req, res) => {
     }
 
     const newOrder = new Order({
-      user,
+      user: req.user._id, // Đảm bảo user đã đăng nhập,
       products,
       totalAmount,
       shippingAddress,

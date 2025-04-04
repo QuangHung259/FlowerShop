@@ -1,29 +1,32 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Provider } from "react-redux";
-import { store } from "./store";
-import AdminRoute from "./components/admin/AdminRoute";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import UserListPage from "./pages/UserListPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import ProductListPage from "./pages/admin/ProductListPage";
-import Navbar from "./components/Navbar";
+import HomeUser from "./pages/HomeUser";
+import Cart from "./pages/Cart";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import AdminHome from "./pages/AdminHome";
+import ProductManagement from "./pages/ProductManagement";
+// import các page khác
 
-export default function App() {
+function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/users" element={<UserListPage />} />
-          <Route path="/admin" element={<AdminRoute />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="products" element={<ProductListPage />} />
-          </Route>
-        </Routes>
-      </Router>
-    </Provider>
+    <Router>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/home" element={<HomeUser />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/admin" element={<AdminHome />} />
+        <Route path="/admin/products" element={<ProductManagement />} />
+        {/* Các route khác */}
+      </Routes>
+    </Router>
   );
 }
+
+export default App;

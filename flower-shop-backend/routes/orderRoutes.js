@@ -7,9 +7,11 @@ const {
   deleteOrder,
 } = require("../controllers/orderController");
 const { isAdmin } = require("../middleware/authMiddleware");
-
+const { authMiddleware } = require("../middleware/authMiddleware");
 const router = express.Router();
 
+// Tạo đơn hàng
+router.post("/", authMiddleware, createOrder); // Người dùng phải đăng nhập
 router.post("/", createOrder); // Tạo đơn hàng mới
 router.get("/:id", getOrderById); // Lấy chi tiết đơn hàng
 
