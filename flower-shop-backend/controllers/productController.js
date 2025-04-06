@@ -1,18 +1,31 @@
 const Product = require("../models/Product");
-const Category = require("../models/Category"); // 👈 Thêm dòng này
+const Category = require("../models/Category");
+const cloudinary = require("../config/cloudinary");
 
 // [1] Thêm sản phẩm mới
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, imageUrl, category } = req.body;
+    const { name, description, price, stock, category } = req.body;
+
+    // Kiểm tra nếu có hình ảnh được upload
+    let imageUrl;
+    if (req.file) {
+      // Lấy đường dẫn URL từ Cloudinary
+      imageUrl = req.file.path;
+    } else {
+      return res.status(400).json({ message: "Hình ảnh là bắt buộc" });
+    }
+
+    // Tạo mới sản phẩm
     const newProduct = new Product({
       name,
       description,
       price,
       stock,
-      imageUrl,
+      imageUrl, // Lưu URL hình ảnh từ Cloudinary
       category,
     });
+
     await newProduct.save();
     res
       .status(201)
@@ -23,22 +36,16 @@ const createProduct = async (req, res) => {
 };
 
 // [2] Lấy danh sách sản phẩm
-
 const getProducts = async (req, res) => {
   try {
-    // Lấy danh sách sản phẩm từ database
     const products = await Product.find().populate("category", "name");
 
-    console.log("Danh sách sản phẩm:", products); // Debug xem có dữ liệu không
-
-    // Kiểm tra nếu không có sản phẩm nào
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "Không có sản phẩm nào" });
     }
 
-    res.status(200).json(products); // Trả về danh sách sản phẩm
+    res.status(200).json(products);
   } catch (error) {
-    console.error("Lỗi khi lấy danh sách sản phẩm:", error);
     res.status(500).json({ message: "Lỗi server", error });
   }
 };
@@ -50,8 +57,10 @@ const getProductById = async (req, res) => {
       "category",
       "name"
     );
+
     if (!product)
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+
     res.status(200).json(product);
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy sản phẩm", error });
