@@ -15,6 +15,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import AdminHome from "./pages/AdminHome";
 import ProductManagement from "./pages/ProductManagement";
 import Navbar from "./components/Navbar";
+import PrivateRouteAdmin from "./components/PrivateRouteAdmin";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,8 +46,23 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
-        <Route path="/admin" element={<AdminHome />} />
-        <Route path="/admin/products" element={<ProductManagement />} />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRouteAdmin user={user}>
+              <AdminHome />
+            </PrivateRouteAdmin>
+          }
+        />
+
+        <Route
+          path="/admin/products"
+          element={
+            <PrivateRouteAdmin user={user}>
+              <ProductManagement />
+            </PrivateRouteAdmin>
+          }
+        />
       </Routes>
     </Router>
   );

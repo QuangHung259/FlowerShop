@@ -35,7 +35,12 @@ const Login = ({ setUser }) => {
       setUser(res.data.user);
 
       // ✅ Điều hướng về Home sau khi đăng nhập thành công
-      navigate("/home");
+      // ✅ Điều hướng tùy theo role
+      if (res.data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Đăng nhập thất bại");
