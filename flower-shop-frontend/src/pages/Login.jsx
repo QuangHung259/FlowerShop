@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,10 +27,14 @@ const Login = () => {
       );
       console.log("Đăng nhập thành công:", res.data);
 
-      // Lưu token vào localStorage (hoặc sessionStorage)
+      // ✅ Lưu token và user vào localStorage
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Điều hướng người dùng tới trang chủ hoặc trang đã đăng nhập
+      // ✅ Cập nhật state App
+      setUser(res.data.user);
+
+      // ✅ Điều hướng về Home sau khi đăng nhập thành công
       navigate("/home");
     } catch (err) {
       console.error(err);

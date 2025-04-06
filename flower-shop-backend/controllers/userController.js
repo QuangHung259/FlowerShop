@@ -35,7 +35,16 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "7d",
     });
-    res.json({ message: "Đăng nhập thành công", token });
+    res.json({
+      message: "Đăng nhập thành công",
+      token,
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Lỗi server", error });
   }
