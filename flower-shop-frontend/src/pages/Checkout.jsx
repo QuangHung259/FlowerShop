@@ -1,32 +1,46 @@
 // src/pages/Checkout.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [shippingAddress, setShippingAddress] = useState("");
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
+  const [cart, setCart] = useState([]);
   const navigate = useNavigate();
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id;
+
+  useEffect(() => {
+    if (userId) {
+      const storedCart =
+        JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
+      setCart(storedCart);
+    }
+  }, [userId]);
+
   const handlePlaceOrder = () => {
-    // Gửi yêu cầu tạo đơn hàng qua API backend
     const orderData = {
       products: cart.map((product) => ({
         product: product._id,
-        quantity: 1, // Giả sử mỗi sản phẩm có số lượng là 1
+        quantity: 1,
       })),
       totalAmount: cart.reduce((acc, item) => acc + item.price, 0),
       shippingAddress,
     };
 
-    // Gửi yêu cầu tạo đơn hàng
-    // Bạn sẽ cần tạo một route API để tạo đơn hàng trên backend
+    // TODO: Gửi API order ở đây
 
-    // Sau khi đơn hàng được tạo thành công, bạn có thể xóa giỏ hàng và chuyển hướng đến trang xác nhận
-    localStorage.removeItem("cart");
-    navigate("/order-confirmation"); // Điều hướng tới trang xác nhận đơn hàng (sẽ tạo sau)
+    localStorage.removeItem(`cart_${userId}`);
+    navigate("/order-confirmation");
   };
+
+  if (!userId) {
+    return (
+      <div className="text-center mt-10">
+        <p>Vui lòng đăng nhập để thanh toán.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

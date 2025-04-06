@@ -3,21 +3,41 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || []
-  );
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user?._id;
+
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    if (userId) {
+      const storedCart =
+        JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
+      setCart(storedCart);
+    }
+  }, [userId]);
+
+  const updateLocalStorage = (updatedCart) => {
+    setCart(updatedCart);
+    localStorage.setItem(`cart_${userId}`, JSON.stringify(updatedCart));
+  };
 
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((product) => product._id !== productId);
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    updateLocalStorage(updatedCart);
   };
 
   const handleCheckout = () => {
-    // Chuyển hướng đến trang thanh toán hoặc thực hiện thanh toán
     navigate("/checkout");
   };
+
+  if (!userId) {
+    return (
+      <div className="text-center mt-10">
+        <p>Vui lòng đăng nhập để xem giỏ hàng.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

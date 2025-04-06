@@ -1,9 +1,25 @@
 const express = require("express");
+const {
+  createReview,
+  getReviewsByProduct,
+  updateReview,
+  deleteReview,
+} = require("../controllers/reviewController");
+const { authMiddleware } = require("../middleware/authMiddleware"); // authMiddleware
+const adminMiddleware = require("../middleware/adminMiddleware"); // adminMiddleware
+
 const router = express.Router();
 
-// Route lấy danh sách đánh giá
-router.get("/", (req, res) => {
-  res.json({ message: "Danh sách đánh giá" });
-});
+// POST: Người dùng gửi đánh giá sản phẩm (authMiddleware)
+router.post("/", authMiddleware, createReview);
+
+// GET: Lấy tất cả đánh giá của một sản phẩm
+router.get("/:productId", getReviewsByProduct);
+
+// PUT: Admin cập nhật đánh giá (adminMiddleware)
+router.put("/:reviewId", authMiddleware, adminMiddleware, updateReview);
+
+// DELETE: Admin xóa đánh giá (adminMiddleware)
+router.delete("/:reviewId", authMiddleware, adminMiddleware, deleteReview);
 
 module.exports = router;
