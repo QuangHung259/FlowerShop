@@ -4,7 +4,9 @@ const User = require("../models/User");
 require("dotenv").config();
 
 const authMiddleware = async (req, res, next) => {
+  console.log("REQ HEADER TOKEN:", req.header("Authorization"));
   let token = req.header("Authorization");
+  console.log("TOKEN RAW:", token);
 
   if (!token) {
     return res

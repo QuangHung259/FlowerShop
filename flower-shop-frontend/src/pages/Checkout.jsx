@@ -3,44 +3,66 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const [shippingAddress, setShippingAddress] = useState("");
   const [cart, setCart] = useState([]);
-  const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
   const userId = user?._id;
 
   useEffect(() => {
-    if (userId) {
-      const storedCart =
-        JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
-      setCart(storedCart);
-    }
+    const storedCart = JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
+    setCart(storedCart);
   }, [userId]);
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
+    if (!user || !user.token) {
+      alert("Bạn cần đăng nhập để đặt hàng.");
+      return;
+    }
+
+    if (!shippingAddress.trim()) {
+      alert("Vui lòng nhập địa chỉ giao hàng.");
+      return;
+    }
+
+    if (cart.length === 0) {
+      alert("Giỏ hàng của bạn đang trống.");
+      return;
+    }
+
     const orderData = {
       products: cart.map((product) => ({
         product: product._id,
-        quantity: 1,
+        quantity: 1, // sau này có thể lấy từ product.quantity nếu bạn lưu
       })),
       totalAmount: cart.reduce((acc, item) => acc + item.price, 0),
       shippingAddress,
     };
 
-    // TODO: Gửi API order ở đây
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    localStorage.removeItem(`cart_${userId}`);
-    navigate("/order-confirmation");
+      if (!response.ok) {
+        throw new Error("Tạo đơn hàng thất bại");
+      }
+
+      const data = await response.json();
+      console.log("Đơn hàng đã được tạo:", data);
+
+      localStorage.removeItem(`cart_${userId}`);
+      navigate("/order-confirmation");
+    } catch (error) {
+      console.error("Lỗi khi đặt hàng:", error.message);
+      alert("Đặt hàng thất bại. Vui lòng thử lại sau.");
+    }
   };
-
-  if (!userId) {
-    return (
-      <div className="text-center mt-10">
-        <p>Vui lòng đăng nhập để thanh toán.</p>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -59,7 +81,7 @@ const Checkout = () => {
             required
           />
         </div>
-
+        <div></div>
         <div>
           <h3 className="text-xl font-bold">Chi tiết đơn hàng</h3>
           <div className="space-y-2">

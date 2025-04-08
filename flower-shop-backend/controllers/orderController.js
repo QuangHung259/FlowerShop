@@ -1,19 +1,27 @@
+//controllers/orderController.js
 const Order = require("../models/Order");
 
 // [1] Thêm đơn hàng mới
 const createOrder = async (req, res) => {
   try {
-    console.log("User ID nhận được:", req.body.user);
-    console.log("Products nhận được:", req.body.products);
+    const { products, totalAmount, shippingAddress } = req.body;
 
-    const { user, products, totalAmount, shippingAddress } = req.body;
-
-    if (!user || !products || !totalAmount || !shippingAddress) {
+    if (!products || !totalAmount || !shippingAddress) {
       return res.status(400).json({ message: "Thiếu dữ liệu đầu vào!" });
     }
 
+    // Lấy thông tin người dùng từ token (req.user._id được middleware auth gán sẵn)
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng!" });
+    }
+
     const newOrder = new Order({
-      user: req.user._id, // Đảm bảo user đã đăng nhập,
+      user: user._id,
+      customerName: user.fullName,
+      customerPhone: user.phone,
+      customerEmail: user.email,
       products,
       totalAmount,
       shippingAddress,
@@ -21,7 +29,11 @@ const createOrder = async (req, res) => {
     });
 
     await newOrder.save();
-    res.status(201).json({ message: "Đơn hàng đã được tạo!", order: newOrder });
+
+    res.status(201).json({
+      message: "Đơn hàng đã được tạo!",
+      order: newOrder,
+    });
   } catch (error) {
     console.error("LỖI KHI TẠO ĐƠN HÀNG:", error);
     res.status(500).json({ message: "Lỗi khi tạo đơn hàng", error });

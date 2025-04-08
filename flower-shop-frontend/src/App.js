@@ -16,6 +16,11 @@ import AdminHome from "./pages/AdminHome";
 import ProductManagement from "./pages/ProductManagement";
 import Navbar from "./components/Navbar";
 import PrivateRouteAdmin from "./components/PrivateRouteAdmin";
+import CategoryList from "./pages/pagesAdmin/CategoryList";
+import CategoryForm from "./pages/pagesAdmin/CategoryForm";
+import ProductList from "./pages/pagesAdmin/ProductList";
+import ProductForm from "./pages/pagesAdmin/ProductForm";
+import ProductEdit from "./pages/pagesAdmin/ProductEdit";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -46,6 +51,12 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-confirmation" element={<OrderConfirmation />} />
+        <Route path="/admin/categories" element={<CategoryList />} />
+        <Route path="/admin/categories" element={<CategoryList />} />
+        <Route path="/admin/categories/new" element={<CategoryForm />} />
+        <Route path="/admin/products" element={<ProductList />} />
+        <Route path="/admin/products/create" element={<ProductForm />} />
+        <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
         <Route
           path="/admin"
           element={

@@ -1,3 +1,4 @@
+//controllers/productController.js
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 const cloudinary = require("../config/cloudinary");
@@ -5,24 +6,20 @@ const cloudinary = require("../config/cloudinary");
 // [1] Thêm sản phẩm mới
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const { name, description, price, stock, category, image } = req.body;
 
-    // Kiểm tra nếu có hình ảnh được upload
-    let imageUrl;
-    if (req.file) {
-      // Lấy đường dẫn URL từ Cloudinary
-      imageUrl = req.file.path;
-    } else {
+    // 👇 Cho phép lấy từ body thay vì req.file
+    const imageUrl = req.body.imageUrl;
+    if (!imageUrl) {
       return res.status(400).json({ message: "Hình ảnh là bắt buộc" });
     }
 
-    // Tạo mới sản phẩm
     const newProduct = new Product({
       name,
       description,
       price,
       stock,
-      imageUrl, // Lưu URL hình ảnh từ Cloudinary
+      imageUrl,
       category,
     });
 

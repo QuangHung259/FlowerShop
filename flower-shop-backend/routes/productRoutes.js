@@ -1,3 +1,4 @@
+//routes/productRoutes.js
 const express = require("express");
 const {
   createProduct,
@@ -18,7 +19,7 @@ router.put("/:id", authMiddleware, isAdmin, updateProduct);
 router.delete("/:id", authMiddleware, isAdmin, deleteProduct);
 
 // Endpoint để upload hình ảnh cho sản phẩm
-router.post("/upload", upload.single("image"), (req, res) => {
+router.post("/upload", authMiddleware, upload.single("image"), (req, res) => {
   try {
     if (req.file) {
       return res.json({
@@ -34,8 +35,5 @@ router.post("/upload", upload.single("image"), (req, res) => {
       .json({ message: "Lỗi upload hình ảnh", error: error.message });
   }
 });
-
-// Endpoint tạo sản phẩm
-router.post("/products", createProduct);
 
 module.exports = router;

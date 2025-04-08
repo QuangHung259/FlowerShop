@@ -1,3 +1,4 @@
+//controllers/categoryController.js
 const Category = require("../models/Category");
 
 // [1] Thêm danh mục mới

@@ -56,7 +56,14 @@ const AdminHome = () => {
             </button>
           </Link>
         </div>
-
+        <div>
+          <h3 className="text-xl font-bold">Quản lý Danh Mục</h3>
+          <Link to="/admin/categories">
+            <button className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600">
+              Quản lý Danh Mục
+            </button>
+          </Link>
+        </div>
         <div>
           <h3 className="text-xl font-bold">Quản lý Đơn Hàng</h3>
           <Link to="/admin/orders">

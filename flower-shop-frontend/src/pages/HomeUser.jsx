@@ -1,4 +1,3 @@
-// src/pages/HomeUser.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -6,28 +5,29 @@ import { useNavigate } from "react-router-dom";
 const HomeUser = () => {
   const [products, setProducts] = useState([]);
 
-  const [cart, setCart] = useState(() => {
-    const cartFromStorage = localStorage.getItem("cart");
-    try {
-      return cartFromStorage ? JSON.parse(cartFromStorage) : [];
-    } catch (error) {
-      console.error("Lỗi khi parse cart từ localStorage:", error);
-      return [];
-    }
-  });
-
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
-    // Kiểm tra nếu storedUser không phải là null và không phải là chuỗi "undefined"
     if (storedUser && storedUser !== "undefined") {
       return JSON.parse(storedUser);
     } else {
-      return null; // Nếu không có user hoặc giá trị là "undefined", trả về null
+      return null;
     }
   });
 
+  const [cart, setCart] = useState([]);
+
+  // ✅ Khi user đã có, đọc giỏ hàng theo userId
+  useEffect(() => {
+    if (user && user._id) {
+      const storedCart =
+        JSON.parse(localStorage.getItem(`cart_${user._id}`)) || [];
+      setCart(storedCart);
+    }
+  }, [user]);
+
   const navigate = useNavigate();
 
+  // Lấy danh sách sản phẩm từ backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -41,6 +41,7 @@ const HomeUser = () => {
     fetchProducts();
   }, []);
 
+  // ✅ Thêm sản phẩm vào giỏ theo cart_{userId}
   const addToCart = (product) => {
     if (!user) {
       alert("Bạn cần đăng nhập để thêm vào giỏ hàng");
@@ -48,9 +49,14 @@ const HomeUser = () => {
       return;
     }
 
-    const updatedCart = [...cart, product];
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    const userId = user._id;
+    const currentCart =
+      JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
+
+    const updatedCart = [...currentCart, product];
+
+    localStorage.setItem(`cart_${userId}`, JSON.stringify(updatedCart));
+    setCart(updatedCart); // Cập nhật số lượng giỏ hàng
   };
 
   const handleCheckout = () => {
@@ -61,12 +67,13 @@ const HomeUser = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    setCart([]); // Clear cart hiển thị
     navigate("/login");
   };
 
   return (
     <div>
-      {/* Thanh điều hướng trên cùng */}
+      {/* Thanh điều hướng */}
       <div className="flex justify-between items-center px-6 py-4 bg-gray-100">
         <h2 className="text-2xl font-bold">Trang Chủ - Người Dùng</h2>
         {user ? (
@@ -74,7 +81,6 @@ const HomeUser = () => {
             <span>
               👋 Chào, <strong>{user.fullName}</strong>
             </span>
-
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
