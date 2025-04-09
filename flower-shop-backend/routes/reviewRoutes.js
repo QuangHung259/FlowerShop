@@ -1,9 +1,11 @@
+//routes/reviewRoutes.js
 const express = require("express");
 const {
   createReview,
   getReviewsByProduct,
   updateReview,
   deleteReview,
+  getAllReviews,
 } = require("../controllers/reviewController");
 const { authMiddleware } = require("../middleware/authMiddleware"); // authMiddleware
 const adminMiddleware = require("../middleware/adminMiddleware"); // adminMiddleware
@@ -21,5 +23,7 @@ router.put("/:reviewId", authMiddleware, adminMiddleware, updateReview);
 
 // DELETE: Admin xóa đánh giá (adminMiddleware)
 router.delete("/:reviewId", authMiddleware, adminMiddleware, deleteReview);
+
+router.get("/all", authMiddleware, adminMiddleware, getAllReviews);
 
 module.exports = router;

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+//pages/pagesAdmin/ProductEdit.jsx
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getProductById, updateProduct } from "../../api/productApi";
 import { useNavigate, useParams } from "react-router-dom";

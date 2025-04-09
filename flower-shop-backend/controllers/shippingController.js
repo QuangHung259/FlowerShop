@@ -1,3 +1,4 @@
+//controllers/shippingController.js
 const Shipping = require("../models/Shipping");
 const Order = require("../models/Order");
 
@@ -36,12 +37,10 @@ const createShipping = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi tạo thông tin vận chuyển",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi tạo thông tin vận chuyển",
+      error: error.message,
+    });
   }
 };
 
@@ -56,12 +55,10 @@ const getAllShipping = async (req, res) => {
     res.json({ shippings });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi lấy danh sách vận chuyển",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách vận chuyển",
+      error: error.message,
+    });
   }
 };
 
@@ -84,12 +81,10 @@ const getShippingByOrderId = async (req, res) => {
     res.json(shipping);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi lấy thông tin vận chuyển",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi lấy thông tin vận chuyển",
+      error: error.message,
+    });
   }
 };
 
@@ -127,12 +122,10 @@ const updateShipping = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi cập nhật thông tin vận chuyển",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi cập nhật thông tin vận chuyển",
+      error: error.message,
+    });
   }
 };
 
@@ -152,12 +145,10 @@ const deleteShipping = async (req, res) => {
     res.json({ message: "Thông tin vận chuyển đã được xóa thành công" });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Lỗi khi xóa thông tin vận chuyển",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Lỗi khi xóa thông tin vận chuyển",
+      error: error.message,
+    });
   }
 };
 

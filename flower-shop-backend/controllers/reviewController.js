@@ -1,3 +1,4 @@
+//controllers/reviewController.js
 const Review = require("../models/Review");
 const Product = require("../models/Product");
 const { authMiddleware, isAdmin } = require("../middleware/authMiddleware"); // Import authMiddleware
@@ -83,7 +84,6 @@ const updateReview = async (req, res) => {
 };
 
 // DELETE: Admin xóa đánh giá
-// DELETE: Admin xóa đánh giá
 const deleteReview = async (req, res) => {
   try {
     const reviewId = req.params.reviewId;
@@ -104,9 +104,23 @@ const deleteReview = async (req, res) => {
   }
 };
 
+// GET: Admin lấy tất cả đánh giá
+const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find()
+      .populate("user", "fullName")
+      .populate("product", "name");
+    res.json(reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Lỗi server", error: error.message });
+  }
+};
+
 module.exports = {
   createReview,
   getReviewsByProduct,
   updateReview,
   deleteReview,
+  getAllReviews,
 };

@@ -1,6 +1,8 @@
+//controllers/userController.js
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Order = require("../models/Order");
 
 const registerUser = async (req, res) => {
   try {
@@ -59,4 +61,51 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsers };
+const updateUserRole = async (req, res) => {
+  try {
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true }
+    );
+
+    if (!user)
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+
+    res.status(200).json({ message: "Cập nhật vai trò thành công", user });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi cập nhật vai trò", error });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    res.status(200).json({ message: "Xóa người dùng thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi xoá người dùng", error });
+  }
+};
+
+const getMyOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy đơn hàng cá nhân", error });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUsers,
+  updateUserRole,
+  deleteUser,
+  getMyOrders,
+};

@@ -1,3 +1,4 @@
+//routes/shippingRoutes.js
 const express = require("express");
 const {
   createShipping,

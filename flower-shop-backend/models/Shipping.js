@@ -1,3 +1,4 @@
+//models/Shipping.js
 const mongoose = require("mongoose");
 
 const ShippingSchema = new mongoose.Schema({
