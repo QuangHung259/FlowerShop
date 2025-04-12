@@ -13,6 +13,14 @@ const Cart = () => {
     if (userId) {
       const storedCart =
         JSON.parse(localStorage.getItem(`cart_${userId}`)) || [];
+
+      const cartWithQuantity = storedCart.map((item) => ({
+        ...item,
+        quantity: typeof item.quantity === "number" && item.quantity > 0 ? item.quantity : 1,
+
+      }));
+      setCart(cartWithQuantity);
+
       setCart(storedCart);
     }
   }, [userId]);
@@ -21,6 +29,20 @@ const Cart = () => {
     setCart(updatedCart);
     localStorage.setItem(`cart_${userId}`, JSON.stringify(updatedCart));
   };
+
+// hàm xử lý tăng giảm số lượng sản phẩm
+  const changeQuantity = (productId, delta) => {
+    const updatedCart = cart.map((item) =>
+      item._id === productId
+        ? {
+            ...item,
+            quantity: Math.max(1, item.quantity + delta), // Giới hạn >= 1
+          }
+        : item
+    );
+    updateLocalStorage(updatedCart);
+  };
+  
 
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((product) => product._id !== productId);
@@ -60,6 +82,21 @@ const Cart = () => {
                 <h3>{product.name}</h3>
                 <p>{product.price} VNĐ</p>
               </div>
+              <div className = "flex item-center gap-2">
+                <button
+                  onClick={() => changeQuantity(product._id, -1)}
+                  className="bg-gray-300 px-2 rounded hover:bg-gray-400"
+                >
+                  −
+                </button>
+                <span>{product.quantity || 1}</span>
+                <button
+                  onClick={() => changeQuantity(product._id, 1)}
+                  className="bg-gray-300 px-2 rounded hover:bg-gray-400"
+                >
+                  +
+                </button>
+              </div>
               <button
                 onClick={() => removeFromCart(product._id)}
                 className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
@@ -69,6 +106,10 @@ const Cart = () => {
             </div>
           ))}
         </div>
+
+        
+
+
       )}
 
       {cart.length > 0 && (
@@ -80,9 +121,11 @@ const Cart = () => {
             Thanh Toán
           </button>
           <p className="font-bold">
-            Tổng tiền: {cart.reduce((acc, item) => acc + item.price, 0)} VNĐ
+            Tổng tiền:{" "}
+            {cart.reduce((acc, item) => acc + item.price * item.quantity, 0)} VNĐ
           </p>
         </div>
+
       )}
     </div>
   );
