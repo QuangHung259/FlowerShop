@@ -16,12 +16,12 @@ const Cart = () => {
 
       const cartWithQuantity = storedCart.map((item) => ({
         ...item,
-        quantity: typeof item.quantity === "number" && item.quantity > 0 ? item.quantity : 1,
-
+        quantity:
+          typeof item.quantity === "number" && item.quantity > 0
+            ? item.quantity
+            : 1,
       }));
       setCart(cartWithQuantity);
-
-      setCart(storedCart);
     }
   }, [userId]);
 
@@ -30,7 +30,7 @@ const Cart = () => {
     localStorage.setItem(`cart_${userId}`, JSON.stringify(updatedCart));
   };
 
-// hàm xử lý tăng giảm số lượng sản phẩm
+  // hàm xử lý tăng giảm số lượng sản phẩm
   const changeQuantity = (productId, delta) => {
     const updatedCart = cart.map((item) =>
       item._id === productId
@@ -42,7 +42,6 @@ const Cart = () => {
     );
     updateLocalStorage(updatedCart);
   };
-  
 
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((product) => product._id !== productId);
@@ -82,7 +81,7 @@ const Cart = () => {
                 <h3>{product.name}</h3>
                 <p>{product.price} VNĐ</p>
               </div>
-              <div className = "flex item-center gap-2">
+              <div className="flex item-center gap-2">
                 <button
                   onClick={() => changeQuantity(product._id, -1)}
                   className="bg-gray-300 px-2 rounded hover:bg-gray-400"
@@ -106,10 +105,6 @@ const Cart = () => {
             </div>
           ))}
         </div>
-
-        
-
-
       )}
 
       {cart.length > 0 && (
@@ -122,10 +117,10 @@ const Cart = () => {
           </button>
           <p className="font-bold">
             Tổng tiền:{" "}
-            {cart.reduce((acc, item) => acc + item.price * item.quantity, 0)} VNĐ
+            {cart.reduce((acc, item) => acc + item.price * item.quantity, 0)}{" "}
+            VNĐ
           </p>
         </div>
-
       )}
     </div>
   );
